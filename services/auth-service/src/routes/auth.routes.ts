@@ -5,7 +5,7 @@ import { loginHandler, registerHandler, revokeHandler, refreshHandler } from "@/
 import { loginSchema, registerSchema, revokeSchema, refreshSchema } from "./auth.schema"
 
 
-const authRouter: Router = Router()
+export const authRouter: Router = Router()
 
 authRouter.post('_', validateRequest({ body: registerSchema.shape.body}), registerHandler)
 authRouter.post('/login', validateRequest({ body: loginSchema.shape.body}), loginHandler)

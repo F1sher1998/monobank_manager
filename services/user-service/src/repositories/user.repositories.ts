@@ -9,14 +9,13 @@ const toDomainUser = (model: UserModel): User => ({
         id: model.id,
         email: model.email,
         displayName: model.displayName,
-        passwordHash: model.passwordHash,
         createdAt: model.createdAt,
         updatedAt: model.updatedAt,
 });
 
 
 export class UserRepository { 
-        async findByid(id: string): Promise<User | null> {
+        async findById(id: string): Promise<User | null> {
                 const user = await UserModel.findByPk(id);
                 return user ? toDomainUser(user) : null
         }

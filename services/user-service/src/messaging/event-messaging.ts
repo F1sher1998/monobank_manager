@@ -90,24 +90,25 @@ export const publishUserCreatedEvent = async (payload: UserCreatedPayload) => {
                 logger.debug({ payload }, 'Skipping [ user.created ] event')
                 return;
         }
+/// {type: string, payload: UserCreatedPayload, occurredAt: string, metadata: {version: number}}
 
         const event: UserCreatedEvent = {
                 type: USER_CREATED_ROUTING_KEY,
                 payload,
                 occurredAt: new Date().toISOString(),
-                metadata: { version: 1 }
+                metadata: { version: 1 },
         };
 
 
         try{
-                const sucess = ch.publish(
+                const success = ch.publish(
                         USER_EVENTS_EXCHANGE,
                         USER_CREATED_ROUTING_KEY,
                         Buffer.from(JSON.stringify(event)),
                         { contentType: 'application/json', persistent: true },
                 );
 
-                if(!sucess){
+                if(!success){
                         logger.warn({ event }, 'Failed to publish user.created event');
                 }
         }catch(error){

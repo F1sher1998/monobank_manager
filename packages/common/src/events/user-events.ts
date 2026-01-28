@@ -1,4 +1,6 @@
-import { EventPayload, OutboundEvent } from "@/events/event-types";
+import { EventPayload, OutboundEvent } from '../events/event-types';
+
+
 
 export const USER_EVENTS_EXCHANGE = 'user.events';
 export const USER_CREATED_ROUTING_KEY = 'user.created';
@@ -8,7 +10,6 @@ export interface UserCreatedPayload extends EventPayload {
      id: string;
      displayName: string;
      email: string;
-     passwordHash: string;
      createdAt: string;
      updatedAt: string;
 }

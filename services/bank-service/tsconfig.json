@@ -12,8 +12,7 @@
       "@common/*": ["../../packages/common/*"]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "build", "**/*.spec.ts"],
+  "include": ["src"],
   "references": [
     { "path": "../../packages/common" }
   ]
