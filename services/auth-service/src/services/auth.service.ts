@@ -30,6 +30,7 @@ export const register = async (input: RegisterInput): Promise<AuthResponse> => {
 	    {
 		email: input.email,
 		displayName: input.displayName,
+		userApi: input.userApi,
 		passwordHash,
 	    },
 	    { transaction }
@@ -77,7 +78,7 @@ export const login = async(input: LoginInput): Promise<AuthTokens> => {
 	throw new HttpError(401, 'Invalid credentials')
     }
 
-    const refreshTokenRecord = await createRefreshToken(credentiail.id);
+    const refreshTokenRecord = await createRefreshToken(credential.id);
 
     const accessToken = signAccessToken({ sub: credential.id, email: credential.email });
     const refreshToken = signRefreshToken({

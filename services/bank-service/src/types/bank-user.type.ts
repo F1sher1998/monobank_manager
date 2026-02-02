@@ -1,5 +1,6 @@
-export interface User {
+export interface BankUser {
         id: string;
+	apiKey: string;
         clientId: string;
         bankName: string;
         createdAt: Date;
@@ -7,11 +8,24 @@ export interface User {
 }
 
 
+export interface BankUserCreateInput {
+	apiKey: string;
+	clientId: string;
+	bankName: string;
+}
+
 export interface Card {
         id: string;
         identifier: string;
         currencyCode: number;
         balance: number;
+	updatedAt: Date;
+}
+
+export interface CardCreateInput {
+	indentifier: string;
+	currencyCode: number;
+	balance: number;
 }
 
 
@@ -23,4 +37,43 @@ export interface Jar {
         currencyCode: number;
         balance: number;
         goal: number;
+	createdAt: Date;
+	updatedAt: Date;
+}
+
+export interface JarCreateInput {
+	title: string;
+	description?: string;
+	identifier: string;
+	currencyCode: number;
+	balance: number;
+	goal: number
+}
+
+
+
+export interface Expense {
+	id: string;
+	time: Date;
+	description: string;
+	mcc: number;
+	amount: number;
+	currencyCode: number;
+	commissionRate: number;
+	cashback: number;
+	balance: number;
+	createdAt: Date;
+	updatedAt: Date;
+}
+
+
+export interface ExpenseCreateInput {
+	time: Date;
+	description: string;
+	mcc: number;
+	amount: number;
+	currencyCode: number;
+	commissionRate: number;
+	cashback: number;
+	balacne: number;
 }

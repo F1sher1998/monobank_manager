@@ -11,7 +11,6 @@ export interface EventMetadata {
   causationId?: string;
   version?: number;
 }
-/// {type: string, payload: UserCreatedPayload, occurredAt: string, metadata: {version: number}}
 export interface OutboundEvent<
   TType extends string,
   TPayload extends EventPayload,

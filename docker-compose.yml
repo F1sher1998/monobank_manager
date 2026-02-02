@@ -1,0 +1,275 @@
+name: monomanager-app
+
+services:
+  monomanager-auth-database:
+    image: postgres:18
+    ports:
+      - '${AUTH_DB_PORT}:5432'
+    environment:
+      POSTGRES_USER: ${AUTH_DB_USER}
+      POSTGRES_DB: ${AUTH_DB_NAME}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
+    volumes:
+      - auth-data:/var/lib/postgresql/data
+    networks:
+      - monomanager-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${AUTH_DB_USER} -d ${AUTH_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  monomanager-user-database:
+    image: postgres:18
+    ports: 
+      - '${USER_DB_PORT}:5432'
+    environment:
+      POSTGRES_USER: ${USER_DB_USER}
+      POSTGRES_DB: ${USER_DB_NAME}
+      POSTGRES_PASSWORD: ${USER_DB_PASSWORD}
+    volumes:
+      - user-data:/var/lib/postgresql/data
+    networks:
+      - monomanager-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${USER_DB_USER} -d ${USER_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+   
+  monomanager-bank-database:
+    image: postgres:18
+    ports:
+      - '${BANK_DB_PORT}:5432'
+    environment:
+      POSTGRES_USER: ${BANK_DB_USER}
+      POSTGRES_DB: ${BANK_DB_NAME}
+      POSTGRES_PASSWORD: ${BANK_DB_PASSWORD}
+    volumes:
+      - bank-data:/var/lib/postgresql/data
+    networks:
+      - monomanager-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${BANK_DB_USER} -d ${BANK_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  monomanager-finance-database:
+    image: postgres:18
+    ports: 
+      - '${FINANCE_DB_PORT}:5432'
+    environment:
+      POSTGRES_USER: ${FINANCE_DB_USER}
+      POSTGRES_DB: ${FINANCE_DB_NAME}
+      POSTGRES_PASSWORD: ${FINANCE_DB_PASSWORD}
+    volumes:
+      - finance-data:/var/lib/postgresql/data
+    networks:
+      - monomanager-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${FINANCE_DB_USER} -d ${FINANCE_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  monomanager-rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - '${RABBITMQ_PORT}:5672'
+      - '${RABBITMQ_MANAGEMENT_PORT}:15672'
+    environment:
+      RABBITMQ_DEFAULT_USER: fisher
+      RABBITMQ_DEFAULT_PASS: 159753789
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - monomanager-network
+    healthcheck:
+      test: ["CMD", 'rabbitmq-diagnostics', '-q', 'ping']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  monomanager-redis:
+    image: redis:7
+    ports:
+      - '${REDIS_PORT}:6379'
+    volumes:
+      - redis-data:/data
+    networks:
+      - monomanager-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+
+  monomanager-gateway:
+    build:
+      context: .
+      dockerfile: services/gateway-service/Dockerfile
+    ports:
+      - '${GATEWAY_PORT}:4000'
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      GATEWAY_PORT: ${GATEWAY_PORT}
+      USER_SERVICE_URL: http://user-service:4002
+      AUTH_SERVICE_URL: http://auth-service:4001
+      BANK_SERVICE_URL: http://bank-service:4003
+      FINANCE_SERVICE_URL: http://financial-service:4004
+      JWT_SECRET: ${JWT_SECRET}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      user-service: 
+        condition: service_healthy
+      bank-service:
+        condition: service_healthy
+      financial-service:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:4000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 70s
+    restart: unless-stopped
+    
+    
+    
+  #Build stage
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: services/auth-service/Dockerfile
+    ports:
+      - ${AUTH_SERVICE_PORT}:4001
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      AUTH_DB_URL: ${AUTH_DB_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN}
+      RABBITMQ_URL: ${RABBITMQ_URL}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+    depends_on:
+      monomanager-auth-database:
+        condition: service_healthy
+      monomanager-rabbitmq:
+        condition: service_healthy
+    networks:
+      - monomanager-network
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:4001/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  
+  
+  user-service:
+    build:
+      context: .
+      dockerfile: services/user-service/Dockerfile
+    ports:
+      - ${USER_SERVICE_PORT}:4002
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      USER_DB_URL: ${USER_DB_URL}
+      RABBITMQ_URL: ${RABBITMQ_URL}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+    depends_on:
+      monomanager-user-database:
+        condition: service_healthy
+      monomanager-rabbitmq:
+        condition: service_healthy
+    networks:
+      - monomanager-network
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:4002/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+
+  bank-service:
+    build:
+      context: .
+      dockerfile: services/bank-service/Dockerfile
+    ports:
+      - ${BANK_SERVICE_PORT}:4003
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      BANK_SERVICE_PORT: ${BANK_SERVICE_PORT}
+      BANK_DB_URL: ${BANK_DB_URL}
+      RABBITMQ_URL: ${RABBITMQ_URL}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+    depends_on:
+      monomanager-bank-database:
+        condition: service_healthy
+      monomanager-rabbitmq:
+        condition: service_healthy
+    networks:
+      - monomanager-network
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:4003/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  financial-service:
+    build:
+      context: .
+      dockerfile: services/financial-service/Dockerfile
+    ports:
+      - ${FINANCE_SERVICE_PORT}:4004
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      FINANCE_SERVICE_PORT: ${FINANCE_SERVICE_PORT}
+      FINANCE_DB_URL: ${FINANCE_DB_URL}
+      RABBITMQ_URL: ${RABBITMQ_URL}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+    depends_on:
+      monomanager-finance-database:
+        condition: service_healthy
+      monomanager-rabbitmq:
+        condition: service_healthy
+      monomanager-redis:
+        condition: service_healthy
+    networks:
+      - monomanager-network
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:4004/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+volumes:
+  user-data:
+  auth-data:
+  finance-data:
+  bank-data:
+  redis-data:
+  rabbitmq-data:
+
+
+networks:
+  monomanager-network:
+    driver: bridge

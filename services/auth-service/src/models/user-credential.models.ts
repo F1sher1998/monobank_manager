@@ -6,6 +6,7 @@ export interface UserCredentialsAttributes {
         id: string;
         email: string;
         displayName: string;
+	userApi: string;
         passwordHash: string;
         createdAt: Date;
         updatedAt: Date;
@@ -21,6 +22,7 @@ export class UserCredentials extends Model<UserCredentialsAttributes, UserCreden
        declare email : string;
        declare displayName : string;
        declare passwordHash : string;
+       declare userApi: string;
        declare createdAt : Date;
        declare updatedAt : Date;
 }
@@ -47,6 +49,12 @@ UserCredentials.init({
                 allowNull: false,
 
         },
+
+	userApi: {
+		type: DataTypes.STRING,
+		allowNull: false,
+		unique: true,
+	},
 
         displayName: {
                 type: DataTypes.STRING,

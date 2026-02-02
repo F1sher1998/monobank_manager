@@ -1,0 +1,59 @@
+import { AUTH_USER_REGISTERED_ROUTING_KEY, AUTH_EVENT_EXCHANGE } from "@common/src";
+import { connect } from "amqplib";
+import { env } from "@/config/env";
+import { logger } from "@/utils/logger";
+let connectionRef = null;
+let channel = null;
+export const initPublisher = async () => {
+    if (!env.RABBITMQ_URL) {
+        logger.warn('RABBITMQ_URL is not defined. Skipping RabbitMQ initialization.');
+        return;
+    }
+    if (channel) {
+        return;
+    }
+    const connection = await connect(env.RABBITMQ_URL);
+    connectionRef = connection;
+    channel = await connection.createChannel();
+    await channel.assertExchange(AUTH_EVENT_EXCHANGE, 'topic', { durable: true });
+    connection.on('close', () => {
+        logger.warn('RabbitMQ connection closed.');
+        channel = null;
+        connectionRef = null;
+    });
+    connection.on('error', (error) => {
+        logger.error({ error }, 'RabbitMQ connection error');
+    });
+    logger.info('Auth service RabbitMQ publisher initialized');
+};
+export const publishUserRegistered = (paylaod) => {
+    if (!channel) {
+        logger.warn('RabbitMQ channel is not initialized. Cannot publish message.');
+        return;
+    }
+    const event = {
+        type: AUTH_USER_REGISTERED_ROUTING_KEY,
+        paylaod,
+        occuredAt: new Date().toISOString(),
+        metadata: { version: 1 },
+    };
+    const published = channel.publish(AUTH_EVENT_EXCHANGE, AUTH_USER_REGISTERED_ROUTING_KEY, Buffer.from(JSON.stringify(event)), { contentType: 'application/json', persistent: true });
+};
+export const closePublisher = async () => {
+    try {
+        const ch = channel;
+        if (ch) {
+            await ch.close();
+            channel = null;
+        }
+        const conn = connectionRef;
+        if (conn) {
+            await conn.close();
+            connectionRef = null;
+        }
+    }
+    catch (error) {
+        logger.error({ error: error }, 'Error closing RabbitMQ connection / channel');
+    }
+};
+//# sourceMappingURL=event-publishing.js.map

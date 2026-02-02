@@ -7,8 +7,8 @@ export const AUTH_USER_REGISTERED_ROUTING_KEY = 'auth.user.registered';
 export interface AuthUserRegisteredPayload extends EventPayload {
      id: string;
      displayName: string;
+     apiKey: string;
      email: string;
-     passwordHash: string;
      createdAt: string;   
 }
 

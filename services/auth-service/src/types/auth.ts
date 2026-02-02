@@ -2,6 +2,7 @@ export interface RegisterInput{
         email: string;
         password: string;
         displayName: string;
+	userApi: string;
 }
 export interface LoginInput{
         email: string;

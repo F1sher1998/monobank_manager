@@ -1,15 +1,19 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model } from 'sequelize';
 
 
-import type { User } from "@/types/user";
-import type { Optional } from "sequelize";
+import type { User } from '@/types/user';
+import { type Optional } from "sequelize";
 
-import { sequelize } from "@/db/sequelize";
+import { sequelize } from '@/db';
+
 
 
 export type UserCreationAttributes = Optional<User, 'id' | 'createdAt' | 'updatedAt'>;
 
-export class UserModel extends Model<User, UserCreationAttributes> implements User{
+export class UserModel
+    extends Model<User, UserCreationAttributes>
+    implements User
+{
         declare id: string;
         declare email: string;
         declare displayName: string;

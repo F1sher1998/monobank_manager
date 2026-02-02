@@ -15,7 +15,6 @@ export const initPublisher = async () => {
 
     if(channel) {
 	return;
-
     }
 
     const connection = await connect(env.RABBITMQ_URL);
@@ -43,8 +42,10 @@ export const publishUserRegistered = (paylaod: AuthUserRegisteredPayload) => {
 	return;
     }
 
+
     const event = {
 	type: AUTH_USER_REGISTERED_ROUTING_KEY,
+
 	paylaod,
 	occuredAt: new Date().toISOString(),
 	metadata: { version: 1 },

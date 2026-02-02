@@ -9,6 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "packageManager": "pnpm@10.28.1",
   "dependencies": {
     "amqplib": "^0.10.9",
     "bcrypt": "^6.0.0",
@@ -16,7 +17,6 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "helmet": "^8.1.0",
-    "http": "0.0.1-security",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.17.2",
     "pg-hstore": "^2.3.4",

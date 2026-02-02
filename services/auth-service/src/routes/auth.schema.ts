@@ -6,6 +6,7 @@ export const registerSchema = z.object({
   body: z.object({
     email: z.string().email(),
     password: z.string().min(8),
+    apiKey: z.string(),
     displayName: z.string().min(3).max(30),
   }),
 });
