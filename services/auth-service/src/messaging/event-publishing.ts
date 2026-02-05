@@ -1,4 +1,4 @@
-import { AUTH_USER_REGISTERED_ROUTING_KEY, AUTH_EVENT_EXCHANGE, type AuthUserRegisteredPayload } from "@common/src";
+import { AUTH_USER_REGISTERED_ROUTING_KEY, AUTH_BANK_USER_PAYLOAD_KEY, AUTH_EVENT_EXCHANGE, type AuthUserRegisteredPayload, type BankUserCreatedPayload, BANK_USER_CREATED_ROUTING_KEY } from "@common/src";
 import { connect, type ChannelModel, type Channel } from "amqplib";
 import { env } from "@/config/env";
 import { logger } from "@/utils/logger";
@@ -36,7 +36,7 @@ export const initPublisher = async () => {
     logger.info('Auth service RabbitMQ publisher initialized');
 };
 
-export const publishUserRegistered = (paylaod: AuthUserRegisteredPayload) => {
+export const publishUserRegistered = (payload: AuthUserRegisteredPayload) => {
     if(!channel){
 	logger.warn('RabbitMQ channel is not initialized. Cannot publish message.')
 	return;
@@ -46,7 +46,7 @@ export const publishUserRegistered = (paylaod: AuthUserRegisteredPayload) => {
     const event = {
 	type: AUTH_USER_REGISTERED_ROUTING_KEY,
 
-	paylaod,
+	payload,
 	occuredAt: new Date().toISOString(),
 	metadata: { version: 1 },
     }
@@ -58,6 +58,29 @@ export const publishUserRegistered = (paylaod: AuthUserRegisteredPayload) => {
 	{ contentType: 'application/json', persistent: true },
     );
 };
+
+
+export const publishBankUserPayload = (payload: BankUserCreatedPayload) => {
+	if(!channel){
+		logger.warn('RabbitMQ channel is not initialized. Cannot publish message.')
+		return;
+	}
+
+	const event = {
+		type: AUTH_BANK_USER_PAYLOAD_KEY,
+
+		payload,
+		occuredAt: new Date().toISOString(),
+		metadata: { version: 1 },
+	}
+
+	const published = channel.publish(
+		AUTH_EVENT_EXCHANGE,
+		BANK_USER_CREATED_ROUTING_KEY,
+		Buffer.from(JSON.stringify(event)),
+		{ contentType: 'application/json', persistent: true },
+	);
+}
 
 
 

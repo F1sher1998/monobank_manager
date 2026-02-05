@@ -5,8 +5,8 @@ import {sequelize} from '@/db/sequelize';
 export interface UserCredentialsAttributes {
         id: string;
         email: string;
+	apiKey: string;
         displayName: string;
-	userApi: string;
         passwordHash: string;
         createdAt: Date;
         updatedAt: Date;
@@ -20,9 +20,9 @@ export class UserCredentials extends Model<UserCredentialsAttributes, UserCreden
     implements UserCredentialsAttributes {
        declare id : string;
        declare email : string;
-       declare displayName : string;
+       declare displayName: string;
        declare passwordHash : string;
-       declare userApi: string;
+       declare apiKey: string;
        declare createdAt : Date;
        declare updatedAt : Date;
 }
@@ -50,7 +50,7 @@ UserCredentials.init({
 
         },
 
-	userApi: {
+	apiKey: {
 		type: DataTypes.STRING,
 		allowNull: false,
 		unique: true,
@@ -60,6 +60,7 @@ UserCredentials.init({
                 type: DataTypes.STRING,
                 allowNull: false,
         },
+
 
         createdAt: {
                 type: DataTypes.DATE,

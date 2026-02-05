@@ -31,14 +31,12 @@ export interface CardCreateInput {
 
 export interface Jar {
         id: string;
-        title: string;
-        description?: string;
-        identifier: string;
-        currencyCode: number;
-        balance: number;
-        goal: number;
-	createdAt: Date;
-	updatedAt: Date;
+	sendId: string;
+	title: string;
+	description: string | null;
+	currencyCode: number;
+	balance: number;
+	goal: number;
 }
 
 export interface JarCreateInput {

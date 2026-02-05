@@ -29,8 +29,8 @@ export const register = async (input: RegisterInput): Promise<AuthResponse> => {
 	const user = await UserCredentials.create(
 	    {
 		email: input.email,
+		apiKey: input.apiKey,
 		displayName: input.displayName,
-		userApi: input.userApi,
 		passwordHash,
 	    },
 	    { transaction }
@@ -49,6 +49,7 @@ export const register = async (input: RegisterInput): Promise<AuthResponse> => {
 	const userData = {
 	    id: user.id,
 	    email: user.email,
+	    apiKey: user.apiKey,
 	    displayName: user.displayName,
 	    createdAt: user.createdAt.toISOString(),
 	};

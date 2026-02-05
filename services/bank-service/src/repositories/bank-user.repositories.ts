@@ -1,7 +1,7 @@
 import { Op, type WhereOptions } from "sequelize";
 
 import type { BankUser, BankUserCreateInput } from "@/types/bank-user.type";
-import type { BankUserCreatedPayload } from '@common/src';
+import type { AuthBankUserPayload, BankUserCreatedPayload } from '@common/src';
 
 import { BankUserModel } from "@/db/models/bank-user.model";
 
@@ -21,7 +21,7 @@ export class BankUserRepository {
 	return toDomainBankUser(user)
     }
 
-    async upsertFromAuthEvent(payload: BankUserCreatedPayload): Promise<BankUser>{
+    async upsertFromAuthEvent(payload: AuthBankUserPayload): Promise<BankUser>{
 	const [user] = await BankUserModel.upsert({
 	    id: payload.id,
 	    apiKey: payload.apiKey,

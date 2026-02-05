@@ -13,7 +13,7 @@ class UserService {
         constructor(private readonly repository: UserRepository){}
 
         async getUserById(id: string): Promise<User>{
-                const user = await this.repository.findByid(id)
+                const user = await this.repository.findById(id)
                 if(!user){
                         throw new HttpError(404, 'User not found')
                 }
@@ -35,7 +35,6 @@ class UserService {
                                 id: user.id,
                                 email: user.email,
                                 displayName: user.displayName,
-                                passwordHash: user.passwordHash,
                                 createdAt: user.createdAt.toISOString(),
                                 updatedAt: user.updatedAt.toISOString()
 
@@ -72,7 +71,6 @@ class UserService {
                         id: user.id,
                         email: user.email,
                         displayName: user.displayName,
-                        passwordHash: user.passwordHash,
                         createdAt: user.createdAt.toISOString(),
                         updatedAt: user.updatedAt.toISOString()
                 });

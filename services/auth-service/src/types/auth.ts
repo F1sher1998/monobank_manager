@@ -2,7 +2,7 @@ export interface RegisterInput{
         email: string;
         password: string;
         displayName: string;
-	userApi: string;
+	apiKey: string;
 }
 export interface LoginInput{
         email: string;
@@ -10,8 +10,8 @@ export interface LoginInput{
 }
 export interface UserData{
         id: string;
+        apiKey: string;
         email: string;
-        displayName: string;
         createdAt: string;
 }
 export interface AuthTokens{

@@ -64,7 +64,6 @@ export class UserRepository {
                         {
                                 id: payload.id,
                                 email: payload.email,
-                                passwordHash: payload.passwordHash,
                                 displayName: payload.displayName,
                                 createdAt: new Date(payload.createdAt),
                                 updatedAt: new Date(payload.createdAt)

@@ -8,7 +8,6 @@ export const USER_CREATED_ROUTING_KEY = 'user.created';
 
 export interface UserCreatedPayload extends EventPayload {
      id: string;
-     displayName: string;
      email: string;
      createdAt: string;
      updatedAt: string;

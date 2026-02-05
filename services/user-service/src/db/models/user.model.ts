@@ -25,7 +25,6 @@ export class UserModel
 
 UserModel.init(
     {
-
             id: {
                     type: DataTypes.UUID,
                     primaryKey: true,
@@ -57,7 +56,7 @@ UserModel.init(
                     type: DataTypes.DATE,
                     allowNull: false,
                     defaultValue: DataTypes.NOW
-            }
+            },
     },
 
     {
