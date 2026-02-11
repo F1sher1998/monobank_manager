@@ -9,7 +9,6 @@ const toDomainBankUser = (model: BankUserModel): BankUser => ({
     id: model.id,
     apiKey: model.apiKey,
     bankName: model.bankName,
-    clientId: model.clientId,
     createdAt: model.createdAt,
     updatedAt: model.updatedAt,
 });
@@ -26,7 +25,6 @@ export class BankUserRepository {
 	    id: payload.id,
 	    apiKey: payload.apiKey,
 	    bankName: payload.bankName,
-	    clientId: payload.clientId,
 	    createdAt: new Date(payload.createdAt),
 	    updatedAt: new Date(payload.createdAt),
 	},
@@ -34,6 +32,16 @@ export class BankUserRepository {
 	);
 
 	return toDomainBankUser(user)
+    }
+
+    async findAll(): Promise<BankUser[]>{
+	const users = await BankUserModel.findAll();
+	return users.map(toDomainBankUser);
+    }
+
+    async findById(id: string): Promise<BankUser | null>{
+	const user = await BankUserModel.findByPk(id);
+	return user ? toDomainBankUser(user) : null;
     }
 }
 

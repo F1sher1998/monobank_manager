@@ -6,3 +6,6 @@ export const createBankUserSchema = z.object({
     apiKey: z.string(),
     clientId: z.string()    
 })
+
+
+export type CreateBankUserBody = z.infer<typeof createBankUserSchema>;

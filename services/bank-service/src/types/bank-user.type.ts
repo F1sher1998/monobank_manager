@@ -1,7 +1,6 @@
 export interface BankUser {
         id: string;
 	apiKey: string;
-        clientId: string;
         bankName: string;
         createdAt: Date;
         updatedAt: Date;

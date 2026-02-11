@@ -25,7 +25,6 @@ export const AUTH_BANK_USER_PAYLOAD_KEY = 'auth.bank.user.payload'
 export interface AuthBankUserPayload extends EventPayload {
      id: string;
      bankName: string;
-     clientId: string;
      apiKey: string;
      createdAt: string;
 }

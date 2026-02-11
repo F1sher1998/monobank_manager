@@ -8,7 +8,6 @@ export type BankUserCreationAttributes = Optional<BankUser, 'id' | 'createdAt' |
 
 export class BankUserModel extends Model<BankUser, BankUserCreationAttributes> implements BankUser {
         declare id: string;
-        declare clientId: string;
 	declare apiKey: string;
         declare bankName: string;
         declare createdAt: Date;
@@ -30,11 +29,6 @@ BankUserModel.init({
 	unique: true,
     },
 
-    clientId: {
-	type: DataTypes.STRING,
-	allowNull: false,
-	unique: true,
-    },
 
     bankName: {
 	type: DataTypes.STRING,

@@ -7,7 +7,6 @@ export const BANK_USER_CREATED_ROUTING_KEY = 'bank-user.created';
 
 export interface BankUserCreatedPayload extends EventPayload {
     id: string;
-    clientId: string;
     apiKey: string;
     bankName: string;
     createdAt: Date;

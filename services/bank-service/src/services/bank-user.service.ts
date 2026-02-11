@@ -29,6 +29,14 @@ class BankUserService{
 
                 return user;
         }
+
+        async getAllUsers(): Promise<BankUser[]>{
+                return this.repository.findAll();
+        }
+
+        async getUserById(id: string): Promise<BankUser | null>{
+                return this.repository.findById(id);
+        }
 }
 
 
