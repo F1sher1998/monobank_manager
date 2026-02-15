@@ -40,7 +40,7 @@ const toDomainExpense = (model: ExpenseModel): Expense => ({
 
 
 
-export class ExpenseService{
+export class ExpenseRepository{
         async createSingleExpense(payload: ExpenseCreateInput){
                 const expense = await ExpenseModel.create(payload)
                 return toDomainExpense(expense)
@@ -99,3 +99,5 @@ export class ExpenseService{
                 return expenses
         }
 }
+
+export const expenseRepository = new ExpenseRepository()
