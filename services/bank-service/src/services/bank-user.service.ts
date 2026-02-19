@@ -1,5 +1,5 @@
 import { BankUserRepository } from "@/repositories/bank-user.repositories";
-import type { BankUserCreateInput, BankUser } from "@/types/bank-user.type";
+import type { BankUserCreateInput, BankUser, Card, CardCreateInput } from "@/types/bank-user.type";
 
 import { sequelize } from "@/db/sequelize";
 import { bankUserRepository } from "@/repositories/bank-user.repositories";
@@ -36,6 +36,18 @@ class BankUserService{
 
         async getUserById(id: string): Promise<BankUser | null>{
                 return this.repository.findById(id);
+        }
+
+        async createCard(paylaod: CardCreateInput): Promise<Card>{
+                return this.repository.createCard(paylaod)
+        }
+
+        async createMultipleCards(payload: CardCreateInput[]): Promise<Card[]>{
+                return this.repository.createMultipleCards(payload)
+        }
+
+        async getCardById(id: string): Promise<Card>{
+                return this.repository.findCardById(id)
         }
 }
 

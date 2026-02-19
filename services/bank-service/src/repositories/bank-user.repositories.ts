@@ -1,9 +1,10 @@
 import { Op, type WhereOptions } from "sequelize";
 
-import type { BankUser, BankUserCreateInput } from "@/types/bank-user.type";
-import type { AuthBankUserPayload, BankUserCreatedPayload } from '@common/src';
+import type { BankUser, BankUserCreateInput, CardCreateInput, Card } from "@/types/bank-user.type";
+import { HttpError, type AuthBankUserPayload, type BankUserCreatedPayload } from '@common/src';
 
 import { BankUserModel } from "@/db/models/bank-user.model";
+import { CardModel } from "@/db/models/card.model";
 
 const toDomainBankUser = (model: BankUserModel): BankUser => ({
     id: model.id,
@@ -42,6 +43,25 @@ export class BankUserRepository {
     async findById(id: string): Promise<BankUser | null>{
 	const user = await BankUserModel.findByPk(id);
 	return user ? toDomainBankUser(user) : null;
+    }
+
+
+    async createCard(payload: CardCreateInput): Promise<Card>{
+	const card = await CardModel.create(payload)
+	return card
+    }
+
+    async createMultipleCards(payload: CardCreateInput[]): Promise<Card[]>{
+	const cards = await CardModel.bulkCreate(payload)
+	return cards
+    }
+
+    async findCardById(id: string): Promise<Card>{
+	const card = await CardModel.findByPk(id)
+	if(!card){
+		throw new HttpError(404, 'Card with this ID was not found')
+	}
+	return card
     }
 }
 

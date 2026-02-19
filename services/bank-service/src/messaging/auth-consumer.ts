@@ -56,7 +56,7 @@ export const startAuthEventConsumer = async () => {
                 if(!msg){
                         return;
                 }
-
+                
                 void handleMessage(msg, ch).catch((error: unknown) => {
                         logger.info({ err: error }, 'Failed to process auth event');
                         ch.nack(msg, false, false);

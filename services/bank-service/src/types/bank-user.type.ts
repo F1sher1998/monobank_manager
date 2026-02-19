@@ -22,7 +22,7 @@ export interface Card {
 }
 
 export interface CardCreateInput {
-	indentifier: string;
+	identifier: string;
 	currencyCode: number;
 	balance: number;
 }
